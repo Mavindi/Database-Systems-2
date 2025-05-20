@@ -1,0 +1,155 @@
+//CREATING A DATABASE
+
+CREATE DATABASE company_db;
+\c company_db
+
+//CREATING TABLES
+
+CREATE TABLE departments(
+dept_id INT PRIMARY KEY,
+dept_name VARCHAR(50) NOT NULL
+);
+
+
+//INSERTING DETAILS TO THE TABLES
+
+INSERT INTO departments(dept_id, dept_name)
+VALUES (1, 'HR'), (2, 'Finance'), (3, 'ICT');
+
+
+//DISPLAYING ALL VALUES
+
+SELECT * FROM employees;
+
+
+//LISTING ALL VALUES
+
+SELECT e.emp_name, e.email, d.dept_name
+FROM employees e
+JOIN departments d ON e.dept_id = d.dept_id;
+
+
+//FINDING VALUES
+
+SELECT emp_name
+FROM employees
+WHERE dept_id = (SELECT dept_id FROM departments WHERE dept_name = 'IT');
+
+
+//CHANGING ALREADY EXISTING VALUES
+
+UPDATE employees SET email = 'bobsmith@company.com' WHERE emp_name = 'HR';
+
+
+//DELETING VALUES
+
+DELETE FROM employees WHERE emp_name = 'Charlie Brown';
+
+
+//DELETING VALUES THAT ARE NULL
+
+DELETE FROM employees WHERE email IS NULL;
+
+
+//CREATING PROCEDURES
+CREATE PROCEDURE display_name(name TEXT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+      RAISE NOTICE 'My name is: %', name;
+ END
+ $$;
+CREATE PROCEDURE
+
+
+//CREATING FUNCTIONS
+CREATE FUNCTION increment_value(INOUT value  INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+value := value + 1;
+END;
+$$;
+CREATE FUNCTION
+
+
+//CALLING IN AN OUT FUNCTION
+CREATE PROCEDURE add_numbers(num1 INT, num2 INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+RAISE NOTICE 'Total: %', num1 + num2;
+END;
+$$;
+CREATE PROCEDURE
+
+postgres=# CAll add_numbers(12,40);
+NOTICE:  Total: 52
+CALL
+
+//Method 1
+
+CREATE PROCEDURE full_name(first_name TEXT, last_name TEXT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+     RAISE NOTICE 'Full name: %', first_name || ' ' || last_name;
+END;
+$$;
+CREATE PROCEDURE
+postgres=# CALL full_name('Mavindi', 'Rathnayake');
+NOTICE:  Full name: Mavindi Rathnayake
+CALL
+
+//Method 2
+
+CREATE OR REPLACE PROCEDURE return_full_name(
+     first_name VARCHAR(10),
+     last_name VARCHAR(10),
+     OUT full_name VARCHAR(50)
+ )
+ LANGUAGE plpgsql
+ AS $$
+ BEGIN
+     full_name := first_name || ' ' || last_name;
+ END;
+ $$;
+CREATE PROCEDURE
+
+ DO $$
+ DECLARE
+     name VARCHAR(50);
+ BEGIN
+     CALL return_full_name('Mavindi', 'Rathnayake', name);
+     RAISE NOTICE 'Full name is: %', name;
+ END;
+ $$;
+NOTICE:  Full name is: Mavindi Rathnayake
+DO
+
+CREATE PROCEDURE double_value(INOUT salary FLOAT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+	salary := salary*2;
+END;
+$$;
+CREATE PROCEDURE
+
+DO
+$$
+DECLARE
+    salary FLOAT := 2500;
+BEGIN
+    CALL double_value(salary);
+    RAISE NOTICE 'Your updated salary is Rs. %', salary;
+END;
+$$;
+$$;
+
+
+
+
+
+
+
